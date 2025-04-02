@@ -56,6 +56,11 @@ pytest
 - Be respectful and collaborative.
 - Follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 - Help review other contributions if possible.
+- Read or update any specific documentation
 
 Happy coding! 🚀
+
+## Some usefull documentation
+
+- (Best Practices for implementing configuration class in Python)[https://verticalserve.medium.com/best-practices-for-implementing-configuration-class-in-python-b63b70048cc5]
 

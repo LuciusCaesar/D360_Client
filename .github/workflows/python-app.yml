@@ -1,0 +1,63 @@
+name: Python application
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Testing
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.13.2
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.13.2"
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install ruff pytest pytest-cov
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    
+    - name: Lint with Ruff
+      run: |
+        ruff check .
+    
+    - name: Test with pytest and generate coverage report
+      run: |
+        pytest --cov=. --cov-report=xml
+    
+    - name: Upload coverage report for SonarCloud
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: coverage.xml
+      
+  sonarqube:
+    name: SonarQube
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Needed for better analysis
+
+    - name: Download coverage report
+      uses: actions/download-artifact@v4
+      with:
+        name: coverage-report
+        path: .coverage-reports/
+        
+    - name: SonarQube Scan
+      uses: SonarSource/sonarqube-scan-action@v5
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

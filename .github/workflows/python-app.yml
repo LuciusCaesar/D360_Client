@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   build:
+    name: Testing
     runs-on: ubuntu-latest
 
     steps:
@@ -40,3 +41,23 @@ jobs:
       with:
         name: coverage-report
         path: coverage.xml
+      
+  sonarqube:
+    name: SonarQube
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Needed for better analysis
+
+    - name: Download coverage report
+      uses: actions/download-artifact@v4
+      with:
+        name: coverage-report
+        path: .coverage-reports/
+        
+    - name: SonarQube Scan
+      uses: SonarSource/sonarqube-scan-action@v5
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

@@ -2,6 +2,8 @@
 
 Thank you for considering contributing to this project! We welcome all contributions, whether they are bug fixes, new features, or documentation improvements.
 
+This has been developped using Python 3.12.2.  
+
 ## Getting Started
 
 1. **Fork the Repository**: Click the "Fork" button on GitHub to create your own copy of the repository.

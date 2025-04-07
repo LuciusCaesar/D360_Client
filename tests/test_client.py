@@ -1,12 +1,12 @@
 # import requests for the purposes of monkeypatching
 import requests
 
-from data360.client import Data360Instance as Data360Instance
+from data360.client import Data360Instance as d360
 from tests.conftest import MockResponse
 
 
 def test_initialization():
-    client = Data360Instance("https://example.com", "api_key", "api_secret")
+    client = d360("https://example.com", "api_key", "api_secret")
     assert client.url == "https://example.com/api/v2"
     assert client.auth_key == "api_key" + ";" + "api_secret"
 
@@ -22,7 +22,7 @@ def test_requests_includes_authorization_header(monkeypatch):
 
     monkeypatch.setattr(requests, "get", mock_get)
 
-    client = Data360Instance("https://example.com", "api_key", "api_secret")
+    client = d360("https://example.com", "api_key", "api_secret")
     client.http_request("/test")
 
     # Check that the mock response is returned

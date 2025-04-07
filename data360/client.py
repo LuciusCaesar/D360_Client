@@ -99,7 +99,7 @@ class Data360Instance:
         :param asset_type: The asset type to get fields for.
         :return: A list of Field objects.
         """
-        return self.get_firlds_by_asset_type_uid(asset_type.uid)
+        return self.get_fields_by_asset_type_uid(asset_type.uid)
 
     def get_fields_by_asset_type_uid(self, asset_type_uid: str) -> list[Field]:
         """

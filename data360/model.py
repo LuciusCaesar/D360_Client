@@ -9,7 +9,7 @@ class AssetClassName(Enum):
     """
 
     GENERIC = "Generic"
-    BUSINESS_ASSET = "BusinessAsset"
+    BUSINESS_ASSET = "Business Asset"
     MODEL = "Model"
     POLICY = "Policy"
     RULE = "Rule"
@@ -31,11 +31,14 @@ class AssetClass:
     Represents an asset class in the Data360 system.
     """
 
-    id: str
-    value: AssetClassName
-    name: AssetClassName
-    description: str
-    allow_comments_on_asset: bool
+    ID: str
+    Value: AssetClassName
+    Name: AssetClassName
+    Description: str
+    AllowCommentsOnAsset: bool
+
+    def __init__(self, **input):
+        self.__dict__.update(input)
 
 
 @dataclass(frozen=True)
@@ -45,24 +48,28 @@ class AssetType:
     """
 
     uid: str
-    name: str
-    asset_class: AssetClass
-    description: str
-    auto_display_description: bool
-    hierarchical: bool
-    hierarchy_maximum_depth: int
-    display_format: str
-    notes: str
-    use_as_transformation: bool
-    can_own_fusion: bool
-    path: str
-    icon_style: dict | None
-    auto_display_parent: bool | None
-    can_edit_parent: bool
-    is_description_enabled: bool
-    is_description_visible_by_default: bool
-    is_default_read_access_enabled: bool
-    description_button_name: str | None
+    Name: str
+    Class: AssetClass
+    Description: str
+    AutoDisplayDescription: bool
+    Hierarchical: bool
+    HierarchyMaximumDepth: int
+    DisplayFormat: str
+    Notes: str
+    UseAsTransformation: bool
+    CanOwnFusion: bool
+    Path: str
+    CanEditParent: bool
+    IsDescriptionEnabled: bool
+    IsDescriptionVisibleByDefault: bool
+    IsDefaultReadAccessEnabled: bool
+    IconStyle: dict | None
+    FlowObjectType: str | None
+    AutoDisplayParent: bool | None
+    DescriptionButtonName: str | None
+
+    def __init__(self, **input):
+        self.__dict__.update(input)
 
 
 @dataclass(frozen=True)
@@ -95,6 +102,9 @@ class Asset:
     GovernanceScore: str | None
     Suggestedcritical: str | None
     DataClassifiedBy: str | None
+
+    def __init__(self, **input):
+        self.__dict__.update(input)
 
 
 # Relationships
@@ -157,3 +167,528 @@ class Relationship:
     Predicate: Predicate
     Subject: Asset
     Object: Asset
+
+
+@dataclass(frozen=True)
+class SearchFieldType:
+    """
+    Represents a search field type in the Data360 system.
+    """
+
+    AddToResult: bool
+    Prefix: str
+    Suffix: str
+    DisplayOrder: int
+
+
+@dataclass(frozen=True)
+class DefinitionType:
+    """
+    Represents a definition type in the Data360 system.
+    """
+
+    DisplayAsList: bool
+    DisplayAssignmentSource: bool
+    ExpandGroupMembership: bool
+    ResponsibilityType: int
+    ResponsibilityTypeUid: str
+
+
+@dataclass(frozen=True)
+class BooleanFieldType:
+    """
+    Represents a Boolean field type in the Data360 system.
+    """
+
+    DefaultValue: bool
+    Description: dict
+    Validation: dict
+    Search: SearchFieldType
+    DisplayInColumn: bool
+    ColumnOrder: int
+    ColumnWidth: int
+    SortOrder: int
+    SortByAscending: bool
+    IsDisplayable: bool
+    IsEditable: bool
+    IsListable: bool
+    IsPartOfKey: bool
+    IsPrimaryFilter: bool
+    ShowIfEmpty: bool
+
+
+@dataclass(frozen=True)
+class ComputedOwnershipLookupFieldType:
+    """
+    Represents a computed ownership lookup field type in the Data360 system.
+    """
+
+    ColumnOrder: int
+    ColumnWidth: int
+    SortOrder: int
+    SortByAscending: bool
+    Description: dict  # {"Display": "string"}
+    Definition: DefinitionType
+    IsDisplayable: bool
+    IsListable: bool
+    ShowIfEmpty: bool
+    HideFilter: bool
+    HideFooter: bool
+    HideHeader: bool
+    DisplayInColumn: bool
+
+
+@dataclass(frozen=True)
+class ComputedRelationshipFieldType:
+    """
+    Represents a computed relationship field type in the Data360 system.
+    """
+
+    ColumnOrder: int
+    ColumnWidth: int
+    SortOrder: int
+    SortByAscending: bool
+    Description: dict
+    IntersectTypeUid: str
+    IntersectTypeName: str
+    FieldTypeName: str
+    IsDisplayable: bool
+    IsListable: bool
+    ShowIfEmpty: bool
+    IsPrimaryFilter: bool
+    Search: SearchFieldType
+    DisplayInColumn: bool
+
+
+@dataclass(frozen=True)
+class ComputedRelationshipLookupFieldType:
+    """
+    Represents a computed relationship lookup field type in the Data360 system.
+    """
+
+    ColumnOrder: int
+    Description: dict
+    Definition: dict
+    IsDisplayable: bool
+    ShowIfEmpty: bool
+    HideFilter: bool
+    HideFooter: bool
+    HideHeader: bool
+
+
+@dataclass(frozen=True)
+class ComputedRelationshipReferenceListFieldType:
+    """
+    Represents a computed relationship reference list field type in the Data360 system.
+    """
+
+    ColumnOrder: int
+    Description: dict
+    IntersectTypeUid: str
+    IntersectTypeName: str
+    IsDisplayable: bool
+    ShowIfEmpty: bool
+    DisplayRefListDescription: bool
+
+
+@dataclass(frozen=True)
+class ReferenceListFieldType:
+    """
+    Represents a reference list field type in the Data360 system.
+    """
+
+    ColumnOrder: int
+    ColumnWidth: int
+    SortOrder: int
+    SortByAscending: bool
+    Description: dict
+    IsDisplayable: bool
+    ShowIfEmpty: bool
+    DisplayRefListDescription: bool
+    DisplayRefListInTable: bool
+    IsListable: bool
+
+
+@dataclass(frozen=True)
+class CounterFieldType:
+    """
+    Represents a counter field type in the Data360 system.
+    """
+
+    Description: dict
+    Search: SearchFieldType
+    CounterPrefix: str
+    CounterInitialIndex: int
+    DisplayInColumn: bool
+    ColumnOrder: int
+    ColumnWidth: int
+    SortOrder: int
+    SortByAscending: bool
+    IsDisplayable: bool
+    IsEditable: bool
+    IsListable: bool
+    IsPartOfKey: bool
+    IsPrimaryFilter: bool
+    ShowIfEmpty: bool
+
+
+@dataclass(frozen=True)
+class DateFieldType:
+    """
+    Represents a date field type in the Data360 system.
+    """
+
+    DefaultValue: str
+    Description: dict
+    Validation: dict
+    Search: SearchFieldType
+    DisplayInColumn: bool
+    ColumnOrder: int
+    ColumnWidth: int
+    SortOrder: int
+    SortByAscending: bool
+    IsDisplayable: bool
+    IsEditable: bool
+    IsListable: bool
+    IsPartOfKey: bool
+    IsPrimaryFilter: bool
+    ShowIfEmpty: bool
+
+
+@dataclass(frozen=True)
+class DateTimeFieldType:
+    """
+    Represents a date-time field type in the Data360 system.
+    """
+
+    DefaultValue: str
+    Description: dict
+    Validation: dict
+    Search: SearchFieldType
+    DisplayInColumn: bool
+    ColumnOrder: int
+    ColumnWidth: int
+    SortOrder: int
+    SortByAscending: bool
+    IsDisplayable: bool
+    IsEditable: bool
+    IsListable: bool
+    IsPartOfKey: bool
+    IsPrimaryFilter: bool
+    ShowIfEmpty: bool
+
+
+@dataclass(frozen=True)
+class DecimalFieldType:
+    """
+    Represents a decimal field type in the Data360 system.
+    """
+
+    DefaultValue: float
+    Description: dict
+    Increment: float
+    Validation: dict
+    Search: SearchFieldType
+    DisplayInColumn: bool
+    ColumnOrder: int
+    ColumnWidth: int
+    SortOrder: int
+    SortByAscending: bool
+    IsDisplayable: bool
+    IsEditable: bool
+    IsListable: bool
+    IsPartOfKey: bool
+    IsPrimaryFilter: bool
+    ShowIfEmpty: bool
+
+
+@dataclass(frozen=True)
+class HtmlFieldType:
+    """
+    Represents an HTML field type in the Data360 system.
+    """
+
+    DefaultValue: str
+    Description: dict
+    Validation: dict
+    DisplayInColumn: bool
+    ColumnOrder: int
+    ColumnWidth: int
+    SortOrder: int
+    SortByAscending: bool
+    IsDisplayable: bool
+    IsEditable: bool
+    IsListable: bool
+    IsPartOfKey: bool
+    IsPrimaryFilter: bool
+    ShowIfEmpty: bool
+
+
+@dataclass(frozen=True)
+class JsonFieldType:
+    """
+    Represents a JSON field type in the Data360 system.
+    """
+
+    ColumnOrder: int
+    Description: dict
+    Validation: dict
+    IsDisplayable: bool
+    ShowIfEmpty: bool
+
+
+@dataclass(frozen=True)
+class JsonElementFieldType:
+    """
+    Represents a JSON element field type in the Data360 system.
+    """
+
+    JsonAttribute: dict
+    Description: dict
+    ColumnOrder: int
+    ColumnWidth: int
+    SortOrder: int
+    SortByAscending: bool
+    IsDisplayable: bool
+    IsListable: bool
+    ShowIfEmpty: bool
+
+
+@dataclass(frozen=True)
+class LinkFieldType:
+    """
+    Represents a link field type in the Data360 system.
+    """
+
+    DefaultValue: dict
+    Description: dict
+    Validation: dict
+    Search: SearchFieldType
+    DisplayInColumn: bool
+    ColumnOrder: int
+    ColumnWidth: int
+    SortOrder: int
+    SortByAscending: bool
+    IsDisplayable: bool
+    IsEditable: bool
+    IsListable: bool
+    IsPartOfKey: bool
+    IsPrimaryFilter: bool
+    ShowIfEmpty: bool
+
+
+@dataclass(frozen=True)
+class LookupFieldType:
+    """
+    Represents a lookup field type in the Data360 system.
+    """
+
+    DefaultValue: str
+    DefaultFormattedValue: str
+    Description: dict
+    AllowAllValue: bool
+    AllowAllLabel: str
+    ParentFieldTypeName: str
+    Filter: dict
+    Format: dict
+    List: dict
+    Validation: dict
+    Search: SearchFieldType
+    DisplayInColumn: bool
+    ColumnOrder: int
+    ColumnWidth: int
+    SortOrder: int
+    SortByAscending: bool
+    IsDisplayable: bool
+    IsEditable: bool
+    IsListable: bool
+    IsPartOfKey: bool
+    IsPrimaryFilter: bool
+    ShowIfEmpty: bool
+
+
+@dataclass(frozen=True)
+class NumberFieldType:
+    """
+    Represents a number field type in the Data360 system.
+    """
+
+    DefaultValue: float
+    Description: dict
+    Increment: float
+    Validation: dict
+    Search: SearchFieldType
+    DisplayInColumn: bool
+    ColumnOrder: int
+    ColumnWidth: int
+    SortOrder: int
+    SortByAscending: bool
+    IsDisplayable: bool
+    IsEditable: bool
+    IsListable: bool
+    IsPartOfKey: bool
+    IsPrimaryFilter: bool
+    ShowIfEmpty: bool
+
+
+@dataclass(frozen=True)
+class PathFieldType:
+    """
+    Represents a path field type in the Data360 system.
+    """
+
+    ColumnOrder: int
+    ColumnWidth: int
+    SortOrder: int
+    SortByAscending: bool
+    Description: dict
+    IsDisplayable: bool
+    IsListable: bool
+    DisplayInColumn: bool
+    Definition: dict
+
+
+@dataclass(frozen=True)
+class RelationshipFieldType:
+    """
+    Represents a relationship field type in the Data360 system.
+    """
+
+    Description: dict
+    IntersectTypeUid: str
+    IntersectTypeName: str
+    ColumnOrder: int
+    ColumnWidth: int
+    SortOrder: int
+    SortByAscending: bool
+    IsDisplayable: bool
+    IsEditable: bool
+    IsListable: bool
+    ShowIfEmpty: bool
+    IsPrimaryFilter: bool
+    DisplayInColumn: bool
+    Search: SearchFieldType
+    UseDisplayFormat: bool
+    IsSubject: bool
+
+
+@dataclass(frozen=True)
+class TextFieldType:
+    """
+    Represents a text field type in the Data360 system.
+    """
+
+    DefaultValue: str
+    Description: dict
+    Validation: dict
+    Search: SearchFieldType
+    DisplayInColumn: bool
+    ColumnOrder: int
+    ColumnWidth: int
+    SortOrder: int
+    SortByAscending: bool
+    IsDisplayable: bool
+    IsEditable: bool
+    IsListable: bool
+    IsPartOfKey: bool
+    IsPrimaryFilter: bool
+    ShowIfEmpty: bool
+
+
+@dataclass(frozen=True)
+class TagFieldType:
+    """
+    Represents a tag field type in the Data360 system.
+    """
+
+    ColumnOrder: int
+    ColumnWidth: int
+    Description: dict
+    SortOrder: int
+    SortByAscending: bool
+    IsListable: bool
+    IsPrimaryFilter: bool
+    TagTypeUID: str
+    TagTypeID: int
+
+
+@dataclass(frozen=True)
+class ScoreFieldType:
+    """
+    Represents a score field type in the Data360 system.
+    """
+
+    ScoreType: str
+    IsDisplayable: bool
+    IsListable: bool
+    ShowIfEmpty: bool
+    IsPrimaryFilter: bool
+    ColumnOrder: int
+    ColumnWidth: int
+    SortOrder: int
+    SortByAscending: bool
+    Description: dict
+    DisplayInColumn: bool
+
+
+@dataclass(frozen=True)
+class SystemFieldType:
+    """
+    Represents a system field type in the Data360 system.
+    """
+
+    DefaultValue: str
+    Description: dict
+    Validation: dict
+    Search: SearchFieldType
+    DisplayInColumn: bool
+    ColumnOrder: int
+    ColumnWidth: int
+    SortOrder: int
+    SortByAscending: bool
+    IsDisplayable: bool
+    IsEditable: bool
+    IsListable: bool
+    IsPartOfKey: bool
+    IsPrimaryFilter: bool
+    ShowIfEmpty: bool
+
+
+@dataclass(frozen=True)
+class Field:
+    """
+    Represents a field in the Data360 system.
+    """
+
+    Name: str
+    FriendlyName: str
+    Category: str
+    ActionTypeUid: str
+    AssetTypeUid: str
+    RelationshipTypeUid: str
+    Id: int
+    Type: (
+        SearchFieldType
+        | BooleanFieldType
+        | ComputedOwnershipLookupFieldType
+        | ComputedRelationshipFieldType
+        | ComputedRelationshipLookupFieldType
+        | ComputedRelationshipReferenceListFieldType
+        | ReferenceListFieldType
+        | CounterFieldType
+        | DateFieldType
+        | DateTimeFieldType
+        | DecimalFieldType
+        | HtmlFieldType
+        | JsonFieldType
+        | JsonElementFieldType
+        | LinkFieldType
+        | LookupFieldType
+        | NumberFieldType
+        | PathFieldType
+        | RelationshipFieldType
+        | TextFieldType
+        | TagFieldType
+        | ScoreFieldType
+        | SystemFieldType
+    )

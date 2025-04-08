@@ -1,5 +1,4 @@
-from data360 import loose_model as model
-from data360 import operations
+from data360 import model, operations
 from data360.meta_model import MetaModel
 
 
@@ -10,6 +9,7 @@ def test_asset_diff():
         AssetUid="asset1",
         Name="Asset 1",
         XrefId="ref1",
+        AssetTypeId=1,
         AssetTypeUid="type1",
         UpdatedOn="2023-10-01T00:00:00Z",
         CreatedOn="2023-10-01T00:00:00Z",
@@ -26,7 +26,7 @@ def test_asset_diff():
         Confidentiality="Confidentiality 1",
         QltyScore="Quality Score 1",
         Critical="Critical 1",
-        Governancescrore="Governance Score 1",
+        GovernanceScore="Governance Score 1",
         Suggestedcritical="Suggested Critical 1",
         DataClassifiedBy="Data Classified By 1",
     )
@@ -35,9 +35,10 @@ def test_asset_diff():
         AssetUid="asset2",
         Name="Asset 2",
         XrefId="ref2",
+        AssetTypeId=1,
         AssetTypeUid="type2",
-        UpdatedOn="2023-20-02T00:00:00Z",
-        CreatedOn="2023-20-02T00:00:00Z",
+        UpdatedOn="2023-20-01T00:00:00Z",
+        CreatedOn="2023-20-01T00:00:00Z",
         Color="red",
         Path="/path/to/asset2",
         DisplayPath="/display/path/to/asset2",
@@ -51,7 +52,7 @@ def test_asset_diff():
         Confidentiality="Confidentiality 2",
         QltyScore="Quality Score 2",
         Critical="Critical 2",
-        Governancescrore="Governance Score 2",
+        GovernanceScore="Governance Score 2",
         Suggestedcritical="Suggested Critical 2",
         DataClassifiedBy="Data Classified By 2",
     )
@@ -60,9 +61,10 @@ def test_asset_diff():
         AssetUid="asset3",
         Name="Asset 3",
         XrefId="ref3",
+        AssetTypeId=3,
         AssetTypeUid="type3",
-        UpdatedOn="2023-30-03T00:00:00Z",
-        CreatedOn="2023-30-03T00:00:00Z",
+        UpdatedOn="2023-30-01T00:00:00Z",
+        CreatedOn="2023-30-01T00:00:00Z",
         Color="red",
         Path="/path/to/asset3",
         DisplayPath="/display/path/to/asset3",
@@ -76,7 +78,7 @@ def test_asset_diff():
         Confidentiality="Confidentiality 3",
         QltyScore="Quality Score 3",
         Critical="Critical 3",
-        Governancescrore="Governance Score 3",
+        GovernanceScore="Governance Score 3",
         Suggestedcritical="Suggested Critical 3",
         DataClassifiedBy="Data Classified By 3",
     )

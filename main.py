@@ -12,6 +12,5 @@ if __name__ == "__main__":
         api_secret=config.SOURCE_API_SECRET.get_secret_value(),
     )
 
-    fields = data360.get_fields_by_asset_type_uid(
-        "6e40b7cd-30ed-4e91-9b4c-ab9050943f3c"
-    )
+    classes = data360.get_asset_class()
+    print(classes)

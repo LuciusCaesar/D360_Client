@@ -1,8 +1,7 @@
 import requests
 
 # from data360.mappers import map_to_asset, map_to_asset_class, map_to_asset_type
-from data360.loose_model import Asset, AssetClass, AssetType, Field
-from data360.model import AssetClassName
+from data360.model import Asset, AssetClass, AssetClassName, AssetType, Field
 
 
 class Data360Instance:
@@ -29,6 +28,7 @@ class Data360Instance:
         headers["Accept"] = "application/json"
         headers["Content-Type"] = "application/json"
         response = requests.get(self.url + method_url, headers=headers, params=params)
+        # response.raise_for_status()
         if response.status_code != 200:
             raise Exception(
                 f"Failed to fetch data: {response.status_code} - {response.text}"
@@ -45,7 +45,6 @@ class Data360Instance:
         # Placeholder for actual API call
         method_url = "/assets/classes"
         response = self.http_request(method_url)
-        # asset_classes = [map_to_asset_class(item) for item in response.json()]
         asset_classes = [AssetClass(**item) for item in response.json()]
         return asset_classes
 
@@ -58,7 +57,6 @@ class Data360Instance:
         # Placeholder for actual API call
         method_url = "/assets/types"
         response = self.http_request(method_url, params=params)
-        # asset_types = [map_to_asset_type(item) for item in response.json()]
         asset_types = [AssetType(**item) for item in response.json()]
         return asset_types
 

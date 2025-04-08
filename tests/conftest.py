@@ -31,6 +31,10 @@ class MockResponse:
     def json(self):
         return self.json_response
 
+    def raise_for_status(self) -> None:
+        """Mock raise_for_status() to do nothing."""
+        pass
+
 
 # monkeypatched requests.get moved to a fixture
 def mock_response(monkeypatch, json_response) -> None:

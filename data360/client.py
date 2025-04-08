@@ -28,13 +28,8 @@ class Data360Instance:
         headers["Accept"] = "application/json"
         headers["Content-Type"] = "application/json"
         response = requests.get(self.url + method_url, headers=headers, params=params)
-        # response.raise_for_status()
-        if response.status_code != 200:
-            raise Exception(
-                f"Failed to fetch data: {response.status_code} - {response.text}"
-            )
-        else:
-            return response
+        response.raise_for_status()
+        return response
 
     def get_asset_class(self) -> list[AssetClass]:
         """

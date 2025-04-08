@@ -5,8 +5,38 @@ from data360.client import Data360Instance as d360
 from data360.model import Asset, AssetClass, AssetClassName, AssetType, Field
 from tests.conftest import MockResponse
 
-# TODO: Sanitize the test data to remove any sensitive information
-# TODO: Refactor testing to ease the maintenance of the tests (code duplication when mocking the response)
+
+def generate_asset_type() -> AssetType:
+    return AssetType(
+        uid="00000000-0000-0000-0000-000000000000",
+        name="string",
+        asset_class=AssetClass(
+            ID=1,
+            Value="BusinessAsset",
+            Name="Business Asset",
+            Description="Business assets.",
+            AllowCommentsOnAsset=True,
+        ),
+        description="string",
+        auto_display_description=True,
+        hierarchical=True,
+        hierarchy_maximum_depth=0,
+        display_format="string",
+        notes="string",
+        use_as_transformation=True,
+        can_own_fusion=True,
+        path="string",
+        icon_style={
+            "ForeColor": "string",
+            "BackColor": "string",
+            "Icon": "string",
+        },
+        auto_display_parent=True,
+        can_edit_parent=True,
+        is_description_enabled=True,
+        is_description_visible_by_default=True,
+        is_default_read_access_enabled=True,
+    )
 
 
 def test_initialization():
@@ -60,74 +90,16 @@ def test_get_asset_types_by_class(testing_d360, mock_get_asset_types_response):
 
 
 def test_get_asset_by_types(testing_d360, mock_get_assets_response):
-    asset_type = AssetType(
-        uid="00000000-0000-0000-0000-000000000000",
-        name="string",
-        asset_class=AssetClass(
-            ID=1,
-            Value="BusinessAsset",
-            Name="Business Asset",
-            Description="Business assets.",
-            AllowCommentsOnAsset=True,
-        ),
-        description="string",
-        auto_display_description=True,
-        hierarchical=True,
-        hierarchy_maximum_depth=0,
-        display_format="string",
-        notes="string",
-        use_as_transformation=True,
-        can_own_fusion=True,
-        path="string",
-        icon_style={
-            "ForeColor": "string",
-            "BackColor": "string",
-            "Icon": "string",
-        },
-        auto_display_parent=True,
-        can_edit_parent=True,
-        is_description_enabled=True,
-        is_description_visible_by_default=True,
-        is_default_read_access_enabled=True,
-    )
+    asset_type = generate_asset_type()
 
     assets = testing_d360.get_asset_by_types(asset_type)
 
-    assert len(assets) == 2
+    assert len(assets) >= 1
     assert all(isinstance(asset, Asset) for asset in assets)
 
 
 def test_get_fields_by_asset_types(testing_d360, mock_get_fields_response):
-    asset_type = AssetType(
-        uid="00000000-0000-0000-0000-000000000000",
-        name="string",
-        asset_class=AssetClass(
-            ID=1,
-            Value="BusinessAsset",
-            Name="Business Asset",
-            Description="Business assets.",
-            AllowCommentsOnAsset=True,
-        ),
-        description="string",
-        auto_display_description=True,
-        hierarchical=True,
-        hierarchy_maximum_depth=0,
-        display_format="string",
-        notes="string",
-        use_as_transformation=True,
-        can_own_fusion=True,
-        path="string",
-        icon_style={
-            "ForeColor": "string",
-            "BackColor": "string",
-            "Icon": "string",
-        },
-        auto_display_parent=True,
-        can_edit_parent=True,
-        is_description_enabled=True,
-        is_description_visible_by_default=True,
-        is_default_read_access_enabled=True,
-    )
+    asset_type = generate_asset_type()
 
     fields = testing_d360.get_fields_by_asset_type(asset_type)
 

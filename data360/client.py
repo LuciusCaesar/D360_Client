@@ -1,6 +1,5 @@
 import requests
 
-# from data360.mappers import map_to_asset, map_to_asset_class, map_to_asset_type
 from data360.model import Asset, AssetClass, AssetClassName, AssetType, Field
 
 
@@ -15,7 +14,7 @@ class Data360Instance:
         self.url = url + "/api/v2"
 
     def http_request(
-        self, method_url: str, headers: dict = {}, params={}
+        self, method_url: str, headers: dict = None, params: dict = None
     ) -> requests.Response:
         """
         Make a GET request to the Data360 API.
@@ -24,6 +23,11 @@ class Data360Instance:
         :param params: The parameters for the request.
         :return: The response from the API.
         """
+        if headers is None:
+            headers = {}
+        if params is None:
+            params = {}
+        # Set default headers
         headers["Authorization"] = self.auth_key
         headers["Accept"] = "application/json"
         headers["Content-Type"] = "application/json"
@@ -81,7 +85,6 @@ class Data360Instance:
         # Placeholder for actual API call
         method_url = "/assets/" + asset_type_uid
         response = self.http_request(method_url)
-        # assets = [map_to_asset(item) for item in response.json()["items"]]
         assets = [Asset(**item) for item in response.json()["items"]]
         return assets
 
@@ -105,6 +108,5 @@ class Data360Instance:
         response = self.http_request(
             method_url, params={"AssetTypeUid": asset_type_uid}
         )
-        # fields = [map_to_asset(item) for item in response.json()["items"]]
         fields = [Field(**item) for item in response.json()["items"]]
         return fields

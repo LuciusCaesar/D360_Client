@@ -1,6 +1,6 @@
 import requests
 
-from data360.model import Asset, AssetClass, AssetClassName, AssetType, Field
+from data360.model import Asset, AssetClass, AssetClassName, AssetType, FieldAsset
 
 
 class Data360Instance:
@@ -14,7 +14,7 @@ class Data360Instance:
         self.url = url + "/api/v2"
 
     def http_request(
-        self, method_url: str, headers: dict = None, params: dict = None
+        self, method_url: str, headers: dict | None = None, params: dict | None = None
     ) -> requests.Response:
         """
         Make a GET request to the Data360 API.
@@ -44,7 +44,9 @@ class Data360Instance:
         # Placeholder for actual API call
         method_url = "/assets/classes"
         response = self.http_request(method_url)
-        asset_classes = [AssetClass(**item) for item in response.json()]
+        # asset_classes = [AssetClass(**item) for item in response.json()]
+        json_response = response.json()
+        asset_classes = [AssetClass.model_validate(json_response[0])]
         return asset_classes
 
     def get_asset_types(self, params={}) -> list[AssetType]:
@@ -56,7 +58,8 @@ class Data360Instance:
         # Placeholder for actual API call
         method_url = "/assets/types"
         response = self.http_request(method_url, params=params)
-        asset_types = [AssetType(**item) for item in response.json()]
+        # asset_types = [AssetType(**item) for item in response.json()]
+        asset_types = [AssetType.model_validate(item) for item in response.json()]
         return asset_types
 
     def get_asset_types_by_class(self, asset_class: AssetClassName) -> list[AssetType]:
@@ -88,7 +91,7 @@ class Data360Instance:
         assets = [Asset(**item) for item in response.json()["items"]]
         return assets
 
-    def get_fields_by_asset_type(self, asset_type: AssetType) -> list[Field]:
+    def get_fields_by_asset_type(self, asset_type: AssetType) -> list[FieldAsset]:
         """
         Get the fields for a specific asset type from the Data360 instance.
         :param data360_instance: The Data360 instance.
@@ -97,7 +100,7 @@ class Data360Instance:
         """
         return self.get_fields_by_asset_type_uid(asset_type.uid)
 
-    def get_fields_by_asset_type_uid(self, asset_type_uid: str) -> list[Field]:
+    def get_fields_by_asset_type_uid(self, asset_type_uid: str) -> list[FieldAsset]:
         """
         Get the fields for a specific asset type from the Data360 instance.
         :param data360_instance: The Data360 instance.
@@ -108,5 +111,5 @@ class Data360Instance:
         response = self.http_request(
             method_url, params={"AssetTypeUid": asset_type_uid}
         )
-        fields = [Field(**item) for item in response.json()["items"]]
+        fields = [FieldAsset(**item) for item in response.json()["items"]]
         return fields

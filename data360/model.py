@@ -1,6 +1,34 @@
 from dataclasses import dataclass
 from enum import Enum
 
+from pydantic import BaseModel, ConfigDict, Field
+
+
+def to_camel(string: str) -> str:
+    """
+    Converts a string from snake_case to CamelCase (upper camel case aka PascalCase).
+    """
+    return "".join(word.capitalize() for word in string.split("_"))
+
+
+class PascalCaseObject(BaseModel):
+    model_config = ConfigDict(
+        alias_generator=to_camel,
+        populate_by_name=True,
+    )
+
+
+class AssetClass(PascalCaseObject):
+    """
+    Represents an Asset Class in the Data360 system.
+    """
+
+    id: int | str = Field(alias="ID")
+    value: str
+    name: str
+    description: str
+    allow_comments_on_asset: bool
+
 
 # Assets
 class AssetClassName(Enum):
@@ -25,86 +53,66 @@ class AssetClassName(Enum):
     GLOSSARY = "Glossary"
 
 
-@dataclass(frozen=True)
-class AssetClass:
-    """
-    Represents an asset class in the Data360 system.
-    """
-
-    ID: str
-    Value: AssetClassName
-    Name: AssetClassName
-    Description: str
-    AllowCommentsOnAsset: bool
-
-    def __init__(self, **input):
-        self.__dict__.update(input)
-
-
-@dataclass(frozen=True)
-class AssetType:
+class AssetType(PascalCaseObject):
     """
     Represents an asset type in the Data360 system.
     """
 
-    uid: str
-    Name: str
-    Class: AssetClass
-    Description: str
-    AutoDisplayDescription: bool
-    Hierarchical: bool
-    HierarchyMaximumDepth: int
-    DisplayFormat: str
-    Notes: str
-    UseAsTransformation: bool
-    CanOwnFusion: bool
-    Path: str
-    CanEditParent: bool
-    IsDescriptionEnabled: bool
-    IsDescriptionVisibleByDefault: bool
-    IsDefaultReadAccessEnabled: bool
-    IconStyle: dict | None
-    FlowObjectType: str | None
-    AutoDisplayParent: bool | None
-    DescriptionButtonName: str | None
-
-    def __init__(self, **input):
-        self.__dict__.update(input)
+    id: int = Field(alias="ID")
+    uid: str = Field(alias="uid")
+    name: str
+    asset_class: AssetClass = Field(alias="Class")
+    description: str
+    auto_display_description: bool
+    hierarchical: bool
+    hierarchy_maximum_depth: int
+    display_format: str
+    notes: str
+    use_as_transformation: bool
+    can_own_fusion: bool
+    path: str
+    can_edit_parent: bool
+    is_description_enabled: bool
+    is_description_visible_by_default: bool
+    is_default_read_access_enabled: bool
+    icon_style: dict | None = None
+    flow_object_type: str | None = None
+    auto_display_parent: bool | None = None
+    description_button_name: str | None = None
 
 
-@dataclass(frozen=True)
-class Asset:
+class Asset(PascalCaseObject):
     """
     Represents an asset in the Data360 system.
     """
 
-    AssetId: int
-    AssetUid: str
-    XrefId: str
-    AssetTypeId: int
-    AssetTypeUid: str
-    UpdatedOn: str
-    CreatedOn: str
-    Color: str
-    Path: str
-    DisplayPath: str
-    Name: str
-    BusinessTerm: str | None
-    DataPoint: str | None
-    BusinessTermDefinition: str | None
-    DataPointDefinition: str | None
-    Key: str
-    DataPrivacyType: str
-    Integrity: str
-    Confidentiality: str
-    QltyScore: str | None
-    Critical: str | None
-    GovernanceScore: str | None
-    Suggestedcritical: str | None
-    DataClassifiedBy: str | None
+    asset_id: int
+    asset_uid: str
+    xref_id: str | None = None
+    asset_type_id: int
+    asset_type_uid: str
+    updated_on: str
+    created_on: str
+    color: str | None = None
+    path: str
+    display_path: str
+    name: str
+    business_term: str | None = None
+    data_point: str | None = None
+    business_term_definition: str | None = None
+    data_point_definition: str | None = None
+    key: str
+    data_privacy_type: str | None = None
+    integrity: str | None = None
+    confidentiality: str | None = None
+    qlty_score: str | None = None
+    critical: str | None = None
+    governance_score: str | None = None
+    suggested_critical: str | None = None
+    data_classified_by: str | None = None
 
-    def __init__(self, **input):
-        self.__dict__.update(input)
+    def __hash__(self):
+        return hash(self.asset_uid)
 
 
 # Relationships
@@ -182,7 +190,7 @@ class SearchFieldType:
 
 
 @dataclass(frozen=True)
-class DefinitionType:
+class DefinitionFieldType:
     """
     Represents a definition type in the Data360 system.
     """
@@ -228,7 +236,7 @@ class ComputedOwnershipLookupFieldType:
     SortOrder: int
     SortByAscending: bool
     Description: dict  # {"Display": "string"}
-    Definition: DefinitionType
+    Definition: DefinitionFieldType
     IsDisplayable: bool
     IsListable: bool
     ShowIfEmpty: bool
@@ -655,7 +663,7 @@ class SystemFieldType:
 
 
 @dataclass(frozen=True)
-class Field:
+class FieldAsset:
     """
     Represents a field in the Data360 system.
     """

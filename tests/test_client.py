@@ -2,37 +2,32 @@
 import requests
 
 from data360.client import Data360Instance as d360
-from data360.model import Asset, AssetClass, AssetClassName, AssetType, Field
+from data360.model import Asset, AssetClass, AssetClassName, AssetType, FieldAsset
 from tests.conftest import MockResponse
 
 
 def generate_asset_type() -> AssetType:
     return AssetType(
-        uid="00000000-0000-0000-0000-000000000000",
-        name="string",
+        id="1234567890",
+        uid="1234567890",
+        name="Test Asset Type",
         asset_class=AssetClass(
-            ID=1,
-            Value="BusinessAsset",
-            Name="Business Asset",
-            Description="Business assets.",
-            AllowCommentsOnAsset=True,
+            id="0987654321",
+            value="Test Asset Class",
+            name=AssetClassName.BUSINESS_ASSET,
+            description="Test Asset Class Description",
+            allow_comments_on_asset=True,
         ),
-        description="string",
+        description="Test Asset Type Description",
         auto_display_description=True,
-        hierarchical=True,
+        hierarchical=False,
         hierarchy_maximum_depth=0,
-        display_format="string",
-        notes="string",
-        use_as_transformation=True,
-        can_own_fusion=True,
-        path="string",
-        icon_style={
-            "ForeColor": "string",
-            "BackColor": "string",
-            "Icon": "string",
-        },
-        auto_display_parent=True,
-        can_edit_parent=True,
+        display_format="Test Display Format",
+        notes="Test Notes",
+        use_as_transformation=False,
+        can_own_fusion=False,
+        path="Test Path",
+        can_edit_parent=False,
         is_description_enabled=True,
         is_description_visible_by_default=True,
         is_default_read_access_enabled=True,
@@ -104,4 +99,4 @@ def test_get_fields_by_asset_types(testing_d360, mock_get_fields_response):
     fields = testing_d360.get_fields_by_asset_type(asset_type)
 
     assert len(fields) >= 1
-    assert all(isinstance(field, Field) for field in fields)
+    assert all(isinstance(field, FieldAsset) for field in fields)

@@ -13,8 +13,9 @@ def to_camel(string: str) -> str:
 
 class PascalCaseObject(BaseModel):
     model_config = ConfigDict(
-        alias_generator=to_camel,
-        populate_by_name=True,
+        alias_generator=to_camel,  # Automatically generates the alias for attributes in CamelCase to comply with the API convention.  Used in serialization/deserialization into json.
+        populate_by_name=True,  # Allows to use the class attribute name in the code instead of the alias
+        frozen=True,  # Make all classes immutable (Functional programming rocks!)
     )
 
 
@@ -28,6 +29,28 @@ class AssetClass(PascalCaseObject):
     name: str
     description: str
     allow_comments_on_asset: bool
+
+    def __eq__(self, other):
+        if not isinstance(other, AssetClass):
+            return NotImplemented
+        # Compare all fields except 'id'
+        return (
+            self.value == other.value
+            and self.name == other.name
+            and self.description == other.description
+            and self.allow_comments_on_asset == other.allow_comments_on_asset
+        )
+
+    def __hash__(self):
+        # Hash only the fields used in __eq__
+        return hash(
+            (
+                self.value,
+                self.name,
+                self.description,
+                self.allow_comments_on_asset,
+            )
+        )
 
 
 # Assets
@@ -58,27 +81,37 @@ class AssetType(PascalCaseObject):
     Represents an asset type in the Data360 system.
     """
 
-    id: int = Field(alias="ID")
+    id: int | None = Field(alias="ID", default=None)
     uid: str = Field(alias="uid")
     name: str
     asset_class: AssetClass = Field(alias="Class")
     description: str
-    auto_display_description: bool
-    hierarchical: bool
-    hierarchy_maximum_depth: int
-    display_format: str
-    notes: str
-    use_as_transformation: bool
-    can_own_fusion: bool
-    path: str
-    can_edit_parent: bool
-    is_description_enabled: bool
-    is_description_visible_by_default: bool
-    is_default_read_access_enabled: bool
+    auto_display_description: bool | None = None
+    hierarchical: bool | None = None
+    hierarchy_maximum_depth: int | None = None
+    display_format: str | None = None
+    notes: str | None = None
+    use_as_transformation: bool | None = None
+    can_own_fusion: bool | None = None
+    path: str | None = None
+    can_edit_parent: bool | None = None
+    is_description_enabled: bool | None = None
+    is_description_visible_by_default: bool | None = None
+    is_default_read_access_enabled: bool | None = None
     icon_style: dict | None = None
     flow_object_type: str | None = None
     auto_display_parent: bool | None = None
     description_button_name: str | None = None
+
+    def __eq__(self, other):
+        if not isinstance(other, AssetClass):
+            return NotImplemented
+        # Compare all fields except 'id'
+        return self.name == other.name
+
+    def __hash__(self):
+        # Hash only the fields used in __eq__
+        return hash((self.name,))
 
 
 class Asset(PascalCaseObject):

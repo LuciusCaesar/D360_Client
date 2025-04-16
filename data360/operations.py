@@ -9,6 +9,10 @@ def calculate_meta_model_difference(
     Calculate the difference between two meta models.
     """
     return MetaModelDiff(
-        assets_to_be_added=list(set(target.asset) - set(current.asset)),
-        assets_to_be_deleted=list(set(current.asset) - set(target.asset)),
+        asset_types_to_be_added=list(
+            set(target.asset_types) - set(current.asset_types)
+        ),
+        asset_types_to_be_deleted=list(
+            set(current.asset_types) - set(target.asset_types)
+        ),
     )

@@ -1,5 +1,8 @@
+from functools import cached_property
+
 import requests
 
+from data360.meta_model import MetaModel
 from data360.model import Asset, AssetClass, AssetClassName, AssetType, FieldAsset
 
 
@@ -12,6 +15,22 @@ class Data360Instance:
         """
         self.auth_key = api_key + ";" + api_secret
         self.url = url + "/api/v2"
+
+    @cached_property
+    def metamodel(self) -> MetaModel:
+        """
+        Get the meta model of the Data360 instance.
+        :return: A MetaModel object.
+        """
+        return self.loadMetamodel()
+
+    def loadMetamodel(self) -> MetaModel:
+        """
+        Load the meta model from the Data360 instance.
+        :return: A MetaModel object.
+        """
+        asset_types = self.get_asset_types()
+        return MetaModel(asset_types=asset_types)
 
     def http_request(
         self, method_url: str, headers: dict | None = None, params: dict | None = None
@@ -44,7 +63,6 @@ class Data360Instance:
         # Placeholder for actual API call
         method_url = "/assets/classes"
         response = self.http_request(method_url)
-        # asset_classes = [AssetClass(**item) for item in response.json()]
         json_response = response.json()
         asset_classes = [AssetClass.model_validate(json_response[0])]
         return asset_classes
@@ -58,7 +76,6 @@ class Data360Instance:
         # Placeholder for actual API call
         method_url = "/assets/types"
         response = self.http_request(method_url, params=params)
-        # asset_types = [AssetType(**item) for item in response.json()]
         asset_types = [AssetType.model_validate(item) for item in response.json()]
         return asset_types
 

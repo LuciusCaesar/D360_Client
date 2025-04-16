@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from data360.model import Asset
+from data360.model import AssetType
 
 
 # meta model
@@ -10,7 +10,7 @@ class MetaModel:
     Represents a meta model in Data360
     """
 
-    asset: list[Asset]
+    asset_types: list[AssetType]
 
 
 @dataclass(frozen=True)
@@ -19,5 +19,5 @@ class MetaModelDiff:
     Represents a meta model diff in Data360
     """
 
-    assets_to_be_added: list[Asset]
-    assets_to_be_deleted: list[Asset]
+    asset_types_to_be_added: list[AssetType]
+    asset_types_to_be_deleted: list[AssetType]

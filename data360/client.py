@@ -30,7 +30,12 @@ class Data360Instance:
         :return: A MetaModel object.
         """
         asset_types = self.get_asset_types()
-        return MetaModel(asset_types=asset_types)
+        assets = [
+            asset
+            for asset_type in asset_types
+            for asset in self.get_asset_by_types(asset_type)
+        ]
+        return MetaModel(asset_types=asset_types, assets=assets)
 
     def http_request(
         self, method_url: str, headers: dict | None = None, params: dict | None = None

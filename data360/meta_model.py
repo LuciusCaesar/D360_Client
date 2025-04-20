@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from data360.model import AssetType
+from data360.model import Asset, AssetType
 
 
 # meta model
@@ -11,6 +11,7 @@ class MetaModel:
     """
 
     asset_types: list[AssetType]
+    assets: list[Asset] | None = None
 
 
 @dataclass(frozen=True)

@@ -124,17 +124,17 @@ class Asset(PascalCaseObject):
     xref_id: str | None = None
     asset_type_id: int
     asset_type_uid: str
-    updated_on: str
+    updated_on: str | None = None
     created_on: str
     color: str | None = None
-    path: str
-    display_path: str
-    name: str
+    path: str | None = None
+    display_path: str | None = None
+    name: str | None = None
     business_term: str | None = None
     data_point: str | None = None
     business_term_definition: str | None = None
     data_point_definition: str | None = None
-    key: str
+    key: str | None = None
     data_privacy_type: str | None = None
     integrity: str | None = None
     confidentiality: str | None = None

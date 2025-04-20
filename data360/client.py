@@ -1,9 +1,14 @@
+import logging
 from functools import cached_property
 
 import requests
 
 from data360.meta_model import MetaModel
 from data360.model import Asset, AssetClass, AssetClassName, AssetType, FieldAsset
+
+logger = logging
+logging.getLogger(__name__)
+logging.basicConfig(encoding="utf-8", level=logging.DEBUG)
 
 
 class Data360Instance:
@@ -29,12 +34,21 @@ class Data360Instance:
         Load the meta model from the Data360 instance.
         :return: A MetaModel object.
         """
+        logger.info("Loading metamodel...")
         asset_types = self.get_asset_types()
+        # remove Group asset type from asset_types as it's not really an asset (it uses another api method)
+        asset_types2 = [
+            asset_type
+            for asset_type in asset_types
+            if asset_type.asset_class.name
+            not in [AssetClassName.GROUP.value, AssetClassName.USER.value]
+        ]
         assets = [
             asset
-            for asset_type in asset_types
+            for asset_type in asset_types2
             for asset in self.get_asset_by_types(asset_type)
         ]
+        logger.info("Metamodel loading complete")
         return MetaModel(asset_types=asset_types, assets=assets)
 
     def http_request(
@@ -55,6 +69,10 @@ class Data360Instance:
         headers["Authorization"] = self.auth_key
         headers["Accept"] = "application/json"
         headers["Content-Type"] = "application/json"
+
+        logging.info(
+            "Make HTTP Call",
+        )
         response = requests.get(self.url + method_url, headers=headers, params=params)
         response.raise_for_status()
         return response

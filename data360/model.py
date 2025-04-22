@@ -103,14 +103,14 @@ class AssetType(PascalCaseObject):
     description_button_name: str | None = None
 
     def __eq__(self, other):
-        if not isinstance(other, AssetClass):
+        if not isinstance(other, AssetType):
             return NotImplemented
         # Compare all fields except 'id'
         return self.name == other.name
 
     def __hash__(self):
         # Hash only the fields used in __eq__
-        return hash((self.name,))
+        return hash((self.name))
 
 
 class Asset(PascalCaseObject):

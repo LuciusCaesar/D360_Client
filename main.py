@@ -6,11 +6,36 @@ if __name__ == "__main__":
     config = AppConfig()
 
     # Create the Data360 instance to work on a final environment
-    data360 = Data360Instance(
+    source = Data360Instance(
         url=config.SOURCE_URL,
         api_key=config.SOURCE_API_KEY.get_secret_value(),
         api_secret=config.SOURCE_API_SECRET.get_secret_value(),
     )
-    # print(data360.asset_types)
-    # print(data360.assets)
-    print(data360.fields)
+    destination = Data360Instance(
+        url=config.DESTINATION_URL,
+        api_key=config.DESTINATION_API_KEY.get_secret_value(),
+        api_secret=config.DESTINATION_API_SECRET.get_secret_value(),
+    )
+
+    print("source asset_types")
+    print(len(source.asset_types))
+    print([asset_type.name for asset_type in source.asset_types])
+
+    print("destination asset_types")
+    print(len(destination.asset_types))
+    print([asset_type.name for asset_type in destination.asset_types])
+
+    asset_types_not_in_source = list(
+        set(destination.asset_types) - set(source.asset_types)
+    )
+    asset_types_not_in_dest = list(
+        set(source.asset_types) - set(destination.asset_types)
+    )
+
+    print("asset types not in source")
+    print(len(asset_types_not_in_source))
+    print([type.name for type in asset_types_not_in_source])
+
+    print("asset types not in destination")
+    print(len(asset_types_not_in_dest))
+    print([asset.name for asset in asset_types_not_in_dest])

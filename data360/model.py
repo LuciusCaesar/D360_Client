@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from enum import Enum
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -148,7 +147,6 @@ class Asset(PascalCaseObject):
         return hash(self.asset_uid)
 
 
-# Relationships
 class Cardinality(Enum):
     """
     Enum representing the cardinality of relationships in the Data360 system.
@@ -158,557 +156,636 @@ class Cardinality(Enum):
     MANY = "Many"
 
 
-@dataclass(frozen=True)
-class PredicateType:
+class PredicateType(PascalCaseObject):
     """
     Enum representing the names of predicate types in the Data360 system.
     """
 
-    Type: str
-    Name: str
-    Description: str
+    type: str
+    name: str
+    description: str
 
 
-@dataclass(frozen=True)
-class Predicate:
-    Uid: str
-    Name: str
-    Inverse: str
-    Type: PredicateType
-    IsSystem: bool
-    IsInUse: bool
+class Predicate(PascalCaseObject):
+    uid: str
+    name: str
+    inverse: str
+    type: PredicateType
+    is_system: bool
+    is_in_use: bool
 
 
-@dataclass(frozen=True)
-class RelationshipType:
+class RelationshipType(PascalCaseObject):
     """
     Represents a relationship type in the Data360 system.
     """
 
-    Id: int
-    Uid: str
-    State: str
-    IsSystem: bool
-    Predicate: Predicate
-    Subject: AssetType
-    SubjectCardinality: Cardinality
-    Object: AssetType
-    ObjectCardinality: Cardinality
+    id: int
+    uid: str
+    state: str
+    is_system: bool
+    predicate: Predicate
+    subject: AssetType
+    subject_cardinality: Cardinality
+    object: AssetType
+    object_cardinality: Cardinality
 
 
-@dataclass(frozen=True)
-class Relationship:
+class Relationship(PascalCaseObject):
     """
     Represents a relationship in the Data360 system.
     """
 
-    Uid: str
-    RelationshipType: RelationshipType
-    State: str
-    Predicate: Predicate
-    Subject: Asset
-    Object: Asset
+    uid: str
+    relationship_type: RelationshipType
+    state: str
+    predicate: Predicate
+    subject: Asset
+    object: Asset
 
 
-@dataclass(frozen=True)
-class SearchFieldType:
+class SearchFieldType(PascalCaseObject):
     """
     Represents a search field type in the Data360 system.
     """
 
-    AddToResult: bool
-    Prefix: str
-    Suffix: str
-    DisplayOrder: int
+    add_to_result: bool | None = None
+    prefix: str | None = None
+    suffix: str | None = None
+    display_order: int | None = None
 
 
-@dataclass(frozen=True)
-class DefinitionFieldType:
+class Description(PascalCaseObject):
+    display: str
+    form: str | None = None
+
+
+class Validation(PascalCaseObject):
+    is_required: bool
+    precision: int | None = None
+    minimum_value: int | None = None
+    maximum_value: int | None = None
+    minimum_length: int | None = None
+    maximum_length: int | None = None
+    message: str | None = None
+    pattern: str | None = None
+
+
+class DefinitionFieldType(PascalCaseObject):
     """
     Represents a definition type in the Data360 system.
     """
 
-    DisplayAsList: bool
-    DisplayAssignmentSource: bool
-    ExpandGroupMembership: bool
-    ResponsibilityType: int
-    ResponsibilityTypeUid: str
+    display_as_list: bool
+    display_assignment_source: bool
+    expand_group_membership: bool
+    responsibility_type: int
+    responsibility_type_uid: str
 
 
-@dataclass(frozen=True)
-class BooleanFieldType:
+class BooleanFieldTypeAttributes(PascalCaseObject):
     """
     Represents a Boolean field type in the Data360 system.
     """
 
-    DefaultValue: bool
-    Description: dict
-    Validation: dict
-    Search: SearchFieldType
-    DisplayInColumn: bool
-    ColumnOrder: int
-    ColumnWidth: int
-    SortOrder: int
-    SortByAscending: bool
-    IsDisplayable: bool
-    IsEditable: bool
-    IsListable: bool
-    IsPartOfKey: bool
-    IsPrimaryFilter: bool
-    ShowIfEmpty: bool
+    default_value: bool
+    description: Description
+    validation: Validation
+    search: SearchFieldType
+    display_in_column: bool
+    column_order: int
+    column_width: int
+    sort_order: int
+    sort_by_ascending: bool
+    is_displayable: bool
+    is_editable: bool
+    is_listable: bool
+    is_part_of_key: bool
+    is_primary_filter: bool
+    show_if_empty: bool
 
 
-@dataclass(frozen=True)
-class ComputedOwnershipLookupFieldType:
+class BooleanFieldType(PascalCaseObject):
+    boolean: BooleanFieldTypeAttributes
+
+
+class ComputedOwnershipLookupFieldTypeAttributes(PascalCaseObject):
     """
     Represents a computed ownership lookup field type in the Data360 system.
     """
 
-    ColumnOrder: int
-    ColumnWidth: int
-    SortOrder: int
-    SortByAscending: bool
-    Description: dict  # {"Display": "string"}
-    Definition: DefinitionFieldType
-    IsDisplayable: bool
-    IsListable: bool
-    ShowIfEmpty: bool
-    HideFilter: bool
-    HideFooter: bool
-    HideHeader: bool
-    DisplayInColumn: bool
+    column_order: int
+    column_width: int
+    sort_order: int
+    sort_by_ascending: bool
+    description: Description
+    definition: DefinitionFieldType
+    is_displayable: bool
+    is_listable: bool
+    show_if_empty: bool
+    hide_filter: bool
+    hide_footer: bool
+    hide_header: bool
+    display_in_column: bool
 
 
-@dataclass(frozen=True)
-class ComputedRelationshipFieldType:
+class ComputedOwnershipLookupFieldType(PascalCaseObject):
+    computed_ownership_lookup: ComputedOwnershipLookupFieldTypeAttributes
+
+
+class ComputedRelationshipFieldTypeAttributes(PascalCaseObject):
     """
     Represents a computed relationship field type in the Data360 system.
     """
 
-    ColumnOrder: int
-    ColumnWidth: int
-    SortOrder: int
-    SortByAscending: bool
-    Description: dict
-    IntersectTypeUid: str
-    IntersectTypeName: str
-    FieldTypeName: str
-    IsDisplayable: bool
-    IsListable: bool
-    ShowIfEmpty: bool
-    IsPrimaryFilter: bool
-    Search: SearchFieldType
-    DisplayInColumn: bool
+    column_order: int
+    column_width: int
+    sort_order: int
+    sort_by_ascending: bool
+    description: Description
+    intersect_type_uid: str
+    intersect_type_name: str
+    field_type_name: str
+    is_displayable: bool
+    is_listable: bool
+    show_if_empty: bool
+    is_primary_filter: bool
+    search: SearchFieldType
+    display_in_column: bool
 
 
-@dataclass(frozen=True)
-class ComputedRelationshipLookupFieldType:
+class ComputedRelationshipFieldType(PascalCaseObject):
+    computed_relationship: ComputedRelationshipFieldTypeAttributes
+
+
+class ComputedRelationshipLookupFieldTypeAttributes(PascalCaseObject):
     """
     Represents a computed relationship lookup field type in the Data360 system.
     """
 
-    ColumnOrder: int
-    Description: dict
-    Definition: dict
-    IsDisplayable: bool
-    ShowIfEmpty: bool
-    HideFilter: bool
-    HideFooter: bool
-    HideHeader: bool
+    column_order: int
+    description: Description
+    definition: dict
+    is_displayable: bool
+    show_if_empty: bool
+    hide_filter: bool
+    hide_footer: bool
+    hide_header: bool
 
 
-@dataclass(frozen=True)
-class ComputedRelationshipReferenceListFieldType:
+class ComputedRelationshipLookupFieldType(PascalCaseObject):
+    computed_relationship_lookup: ComputedRelationshipLookupFieldTypeAttributes
+
+
+class ComputedRelationshipReferenceListFieldTypeAttributes(PascalCaseObject):
     """
     Represents a computed relationship reference list field type in the Data360 system.
     """
 
-    ColumnOrder: int
-    Description: dict
-    IntersectTypeUid: str
-    IntersectTypeName: str
-    IsDisplayable: bool
-    ShowIfEmpty: bool
-    DisplayRefListDescription: bool
+    column_order: int
+    description: Description
+    intersect_type_uid: str
+    intersect_type_name: str
+    is_displayable: bool
+    show_if_empty: bool
+    display_ref_list_description: bool
 
 
-@dataclass(frozen=True)
-class ReferenceListFieldType:
+class ComputedRelationshipReferenceListFieldType(PascalCaseObject):
+    computed_relationship_reference_list: (
+        ComputedRelationshipReferenceListFieldTypeAttributes
+    )
+
+
+class ReferenceListFieldTypeAttributes(PascalCaseObject):
     """
     Represents a reference list field type in the Data360 system.
     """
 
-    ColumnOrder: int
-    ColumnWidth: int
-    SortOrder: int
-    SortByAscending: bool
-    Description: dict
-    IsDisplayable: bool
-    ShowIfEmpty: bool
-    DisplayRefListDescription: bool
-    DisplayRefListInTable: bool
-    IsListable: bool
+    column_order: int
+    column_width: int
+    sort_order: int
+    sort_by_ascending: bool
+    description: Description
+    is_displayable: bool
+    show_if_empty: bool
+    display_ref_list_description: bool
+    display_ref_list_in_table: bool
+    is_listable: bool
 
 
-@dataclass(frozen=True)
-class CounterFieldType:
+class ReferenceListFieldType(PascalCaseObject):
+    reference_list: ReferenceListFieldTypeAttributes
+
+
+class CounterFieldTypeAttributes(PascalCaseObject):
     """
     Represents a counter field type in the Data360 system.
     """
 
-    Description: dict
-    Search: SearchFieldType
-    CounterPrefix: str
-    CounterInitialIndex: int
-    DisplayInColumn: bool
-    ColumnOrder: int
-    ColumnWidth: int
-    SortOrder: int
-    SortByAscending: bool
-    IsDisplayable: bool
-    IsEditable: bool
-    IsListable: bool
-    IsPartOfKey: bool
-    IsPrimaryFilter: bool
-    ShowIfEmpty: bool
+    description: Description
+    search: SearchFieldType
+    counter_prefix: str
+    counter_initial_index: int
+    display_in_column: bool
+    column_order: int
+    column_width: int
+    sort_order: int
+    sort_by_ascending: bool
+    is_displayable: bool
+    is_editable: bool
+    is_listable: bool
+    is_part_of_key: bool
+    is_primary_filter: bool
+    show_if_empty: bool
 
 
-@dataclass(frozen=True)
-class DateFieldType:
+class CounterFieldType(PascalCaseObject):
+    Counter: CounterFieldTypeAttributes
+
+
+class DateFieldTypeAttributes(PascalCaseObject):
     """
     Represents a date field type in the Data360 system.
     """
 
-    DefaultValue: str
-    Description: dict
-    Validation: dict
-    Search: SearchFieldType
-    DisplayInColumn: bool
-    ColumnOrder: int
-    ColumnWidth: int
-    SortOrder: int
-    SortByAscending: bool
-    IsDisplayable: bool
-    IsEditable: bool
-    IsListable: bool
-    IsPartOfKey: bool
-    IsPrimaryFilter: bool
-    ShowIfEmpty: bool
+    default_value: str
+    description: Description
+    validation: Validation
+    search: SearchFieldType
+    display_in_column: bool
+    column_order: int
+    column_width: int
+    sort_order: int
+    sort_by_ascending: bool
+    is_displayable: bool
+    is_editable: bool
+    is_listable: bool
+    is_part_of_key: bool
+    is_primary_filter: bool
+    show_if_empty: bool
 
 
-@dataclass(frozen=True)
-class DateTimeFieldType:
+class DateFieldType(PascalCaseObject):
+    Date: DateFieldTypeAttributes
+
+
+class DateTimeFieldTypeAttributes(PascalCaseObject):
     """
     Represents a date-time field type in the Data360 system.
     """
 
-    DefaultValue: str
-    Description: dict
-    Validation: dict
-    Search: SearchFieldType
-    DisplayInColumn: bool
-    ColumnOrder: int
-    ColumnWidth: int
-    SortOrder: int
-    SortByAscending: bool
-    IsDisplayable: bool
-    IsEditable: bool
-    IsListable: bool
-    IsPartOfKey: bool
-    IsPrimaryFilter: bool
-    ShowIfEmpty: bool
+    default_value: str
+    description: Description
+    validation: Validation
+    search: SearchFieldType
+    display_in_column: bool
+    column_order: int
+    column_width: int
+    sort_order: int
+    sort_by_ascending: bool
+    is_displayable: bool
+    is_editable: bool
+    is_listable: bool
+    is_part_of_key: bool
+    is_primary_filter: bool
+    show_if_empty: bool
 
 
-@dataclass(frozen=True)
-class DecimalFieldType:
+class DateTimeFieldType(PascalCaseObject):
+    date_time: DateTimeFieldTypeAttributes
+
+
+class DecimalFieldTypeAttributes(PascalCaseObject):
     """
     Represents a decimal field type in the Data360 system.
     """
 
-    DefaultValue: float
-    Description: dict
-    Increment: float
-    Validation: dict
-    Search: SearchFieldType
-    DisplayInColumn: bool
-    ColumnOrder: int
-    ColumnWidth: int
-    SortOrder: int
-    SortByAscending: bool
-    IsDisplayable: bool
-    IsEditable: bool
-    IsListable: bool
-    IsPartOfKey: bool
-    IsPrimaryFilter: bool
-    ShowIfEmpty: bool
+    default_value: float
+    description: Description
+    increment: float
+    validation: Validation
+    search: SearchFieldType
+    display_in_column: bool
+    column_order: int
+    column_width: int
+    sort_order: int
+    sort_by_ascending: bool
+    is_displayable: bool
+    is_editable: bool
+    is_listable: bool
+    is_part_of_key: bool
+    is_primary_filter: bool
+    show_if_empty: bool
 
 
-@dataclass(frozen=True)
-class HtmlFieldType:
+class DecimalFieldType(PascalCaseObject):
+    decimal: DecimalFieldTypeAttributes
+
+
+class HtmlFieldTypeAttributes(PascalCaseObject):
     """
     Represents an HTML field type in the Data360 system.
     """
 
-    DefaultValue: str
-    Description: dict
-    Validation: dict
-    DisplayInColumn: bool
-    ColumnOrder: int
-    ColumnWidth: int
-    SortOrder: int
-    SortByAscending: bool
-    IsDisplayable: bool
-    IsEditable: bool
-    IsListable: bool
-    IsPartOfKey: bool
-    IsPrimaryFilter: bool
-    ShowIfEmpty: bool
+    default_value: str
+    description: Description
+    validation: Validation
+    display_in_column: bool
+    column_order: int
+    column_width: int
+    sort_order: int
+    sort_by_ascending: bool
+    is_displayable: bool
+    is_editable: bool
+    is_listable: bool
+    is_part_of_key: bool
+    is_primary_filter: bool
+    show_if_empty: bool
 
 
-@dataclass(frozen=True)
-class JsonFieldType:
+class HtmlFieldType(PascalCaseObject):
+    html: HtmlFieldTypeAttributes
+
+
+class JsonFieldTypeAttributes(PascalCaseObject):
     """
     Represents a JSON field type in the Data360 system.
     """
 
-    ColumnOrder: int
-    Description: dict
-    Validation: dict
-    IsDisplayable: bool
-    ShowIfEmpty: bool
+    column_order: int
+    description: Description
+    validation: Validation
+    is_displayable: bool
+    show_if_empty: bool
 
 
-@dataclass(frozen=True)
-class JsonElementFieldType:
+class JsonFieldType(PascalCaseObject):
+    json_attribute: JsonFieldTypeAttributes = Field(
+        alias="Json"
+    )  # For some reasons, mypy doesn't like when the attribute is called "json" only.
+
+
+class JsonElementFieldTypeAttributes(PascalCaseObject):
     """
     Represents a JSON element field type in the Data360 system.
     """
 
-    JsonAttribute: dict
-    Description: dict
-    ColumnOrder: int
-    ColumnWidth: int
-    SortOrder: int
-    SortByAscending: bool
-    IsDisplayable: bool
-    IsListable: bool
-    ShowIfEmpty: bool
+    json_attribute: dict
+    description: Description
+    column_order: int
+    column_width: int
+    sort_order: int
+    sort_by_ascending: bool
+    is_displayable: bool
+    is_listable: bool
+    show_if_empty: bool
 
 
-@dataclass(frozen=True)
-class LinkFieldType:
+class JsonElementFieldType(PascalCaseObject):
+    json_element: JsonElementFieldTypeAttributes
+
+
+class LinkFieldTypeAttributes(PascalCaseObject):
     """
     Represents a link field type in the Data360 system.
     """
 
-    DefaultValue: dict
-    Description: dict
-    Validation: dict
-    Search: SearchFieldType
-    DisplayInColumn: bool
-    ColumnOrder: int
-    ColumnWidth: int
-    SortOrder: int
-    SortByAscending: bool
-    IsDisplayable: bool
-    IsEditable: bool
-    IsListable: bool
-    IsPartOfKey: bool
-    IsPrimaryFilter: bool
-    ShowIfEmpty: bool
+    default_value: dict
+    description: Description
+    validation: Validation
+    search: SearchFieldType
+    display_in_column: bool
+    column_order: int
+    column_width: int
+    sort_order: int
+    sort_by_ascending: bool
+    is_displayable: bool
+    is_editable: bool
+    is_listable: bool
+    is_part_of_key: bool
+    is_primary_filter: bool
+    show_if_empty: bool
 
 
-@dataclass(frozen=True)
-class LookupFieldType:
+class LinkFieldType(PascalCaseObject):
+    link: LinkFieldTypeAttributes
+
+
+class LookupFieldTypeAttributes(PascalCaseObject):
     """
     Represents a lookup field type in the Data360 system.
     """
 
-    DefaultValue: str
-    DefaultFormattedValue: str
-    Description: dict
-    AllowAllValue: bool
-    AllowAllLabel: str
-    ParentFieldTypeName: str
-    Filter: dict
-    Format: dict
-    List: dict
-    Validation: dict
-    Search: SearchFieldType
-    DisplayInColumn: bool
-    ColumnOrder: int
-    ColumnWidth: int
-    SortOrder: int
-    SortByAscending: bool
-    IsDisplayable: bool
-    IsEditable: bool
-    IsListable: bool
-    IsPartOfKey: bool
-    IsPrimaryFilter: bool
-    ShowIfEmpty: bool
+    default_value: str
+    default_formatted_value: str
+    description: Description
+    allow_all_value: bool
+    allow_all_label: str
+    parent_field_type_name: str
+    filter: dict
+    format: dict
+    list: dict
+    validation: Validation
+    search: SearchFieldType
+    display_in_column: bool
+    column_order: int
+    column_width: int
+    sort_order: int
+    sort_by_ascending: bool
+    is_displayable: bool
+    is_editable: bool
+    is_listable: bool
+    is_part_of_key: bool
+    is_primary_filter: bool
+    show_if_empty: bool
 
 
-@dataclass(frozen=True)
-class NumberFieldType:
+class LookupFieldType(PascalCaseObject):
+    lookup: LookupFieldTypeAttributes
+
+
+class NumberFieldTypeAttributes(PascalCaseObject):
     """
     Represents a number field type in the Data360 system.
     """
 
-    DefaultValue: float
-    Description: dict
-    Increment: float
-    Validation: dict
-    Search: SearchFieldType
-    DisplayInColumn: bool
-    ColumnOrder: int
-    ColumnWidth: int
-    SortOrder: int
-    SortByAscending: bool
-    IsDisplayable: bool
-    IsEditable: bool
-    IsListable: bool
-    IsPartOfKey: bool
-    IsPrimaryFilter: bool
-    ShowIfEmpty: bool
+    default_value: float
+    description: Description
+    increment: float
+    validation: Validation
+    search: SearchFieldType
+    display_in_column: bool
+    column_order: int
+    column_width: int
+    sort_order: int
+    sort_by_ascending: bool
+    is_displayable: bool
+    is_editable: bool
+    is_listable: bool
+    is_part_of_key: bool
+    is_primary_filter: bool
+    show_if_empty: bool
 
 
-@dataclass(frozen=True)
-class PathFieldType:
+class NumberFieldType(PascalCaseObject):
+    number: NumberFieldTypeAttributes
+
+
+class PathFieldTypeAttributes(PascalCaseObject):
     """
     Represents a path field type in the Data360 system.
     """
 
-    ColumnOrder: int
-    ColumnWidth: int
-    SortOrder: int
-    SortByAscending: bool
-    Description: dict
-    IsDisplayable: bool
-    IsListable: bool
-    DisplayInColumn: bool
-    Definition: dict
+    column_order: int
+    column_width: int
+    sort_order: int
+    sort_by_ascending: bool
+    description: Description
+    is_displayable: bool
+    is_listable: bool
+    display_in_column: bool
+    definition: dict
 
 
-@dataclass(frozen=True)
-class RelationshipFieldType:
+class PathFieldType(PascalCaseObject):
+    path: PathFieldTypeAttributes
+
+
+class RelationshipFieldTypeAttributes(PascalCaseObject):
     """
     Represents a relationship field type in the Data360 system.
     """
 
-    Description: dict
-    IntersectTypeUid: str
-    IntersectTypeName: str
-    ColumnOrder: int
-    ColumnWidth: int
-    SortOrder: int
-    SortByAscending: bool
-    IsDisplayable: bool
-    IsEditable: bool
-    IsListable: bool
-    ShowIfEmpty: bool
-    IsPrimaryFilter: bool
-    DisplayInColumn: bool
-    Search: SearchFieldType
-    UseDisplayFormat: bool
-    IsSubject: bool
+    description: Description
+    intersect_type_uid: str
+    intersect_type_name: str
+    column_order: int
+    column_width: int
+    sort_order: int
+    sort_by_ascending: bool
+    is_displayable: bool
+    is_editable: bool
+    is_listable: bool
+    show_if_empty: bool
+    is_primary_filter: bool
+    display_in_column: bool
+    search: SearchFieldType
+    use_display_format: bool
+    is_subject: bool
 
 
-@dataclass(frozen=True)
-class TextFieldType:
+class RelationshipFieldType(PascalCaseObject):
+    relationship: RelationshipFieldTypeAttributes
+
+
+class TextFieldTypeAttributes(PascalCaseObject):
     """
     Represents a text field type in the Data360 system.
     """
 
-    DefaultValue: str
-    Description: dict
-    Validation: dict
-    Search: SearchFieldType
-    DisplayInColumn: bool
-    ColumnOrder: int
-    ColumnWidth: int
-    SortOrder: int
-    SortByAscending: bool
-    IsDisplayable: bool
-    IsEditable: bool
-    IsListable: bool
-    IsPartOfKey: bool
-    IsPrimaryFilter: bool
-    ShowIfEmpty: bool
+    default_value: str
+    description: Description
+    validation: Validation
+    search: SearchFieldType
+    display_in_column: bool
+    column_order: int
+    column_width: int
+    sort_order: int
+    sort_by_ascending: bool
+    is_displayable: bool
+    is_editable: bool
+    is_listable: bool
+    is_part_of_key: bool
+    is_primary_filter: bool
+    show_if_empty: bool
 
 
-@dataclass(frozen=True)
-class TagFieldType:
+class TextFieldType(PascalCaseObject):
+    text: TextFieldTypeAttributes
+
+
+class TagFieldTypeAttributes(PascalCaseObject):
     """
     Represents a tag field type in the Data360 system.
     """
 
-    ColumnOrder: int
-    ColumnWidth: int
-    Description: dict
-    SortOrder: int
-    SortByAscending: bool
-    IsListable: bool
-    IsPrimaryFilter: bool
-    TagTypeUID: str
-    TagTypeID: int
+    column_order: int
+    column_width: int
+    description: Description
+    sort_order: int
+    sort_by_ascending: bool
+    is_listable: bool
+    is_primary_filter: bool
+    tag_type_uid: str = Field(alias="TagTypeUID")
+    tag_type_id: int = Field(alias="TagTypeID")
 
 
-@dataclass(frozen=True)
-class ScoreFieldType:
+class TagFieldType(PascalCaseObject):
+    tag: TagFieldTypeAttributes
+
+
+class ScoreFieldTypeAttributes(PascalCaseObject):
     """
     Represents a score field type in the Data360 system.
     """
 
-    ScoreType: str
-    IsDisplayable: bool
-    IsListable: bool
-    ShowIfEmpty: bool
-    IsPrimaryFilter: bool
-    ColumnOrder: int
-    ColumnWidth: int
-    SortOrder: int
-    SortByAscending: bool
-    Description: dict
-    DisplayInColumn: bool
+    score_type: str
+    is_displayable: bool
+    is_listable: bool
+    show_if_empty: bool
+    is_primary_filter: bool
+    column_order: int
+    column_width: int
+    sort_order: int
+    sort_by_ascending: bool
+    description: Description
+    display_in_column: bool
 
 
-@dataclass(frozen=True)
-class SystemFieldType:
+class ScoreFieldType(PascalCaseObject):
+    score: ScoreFieldTypeAttributes
+
+
+class SystemFieldTypeAttributes(PascalCaseObject):
     """
     Represents a system field type in the Data360 system.
     """
 
-    DefaultValue: str
-    Description: dict
-    Validation: dict
-    Search: SearchFieldType
-    DisplayInColumn: bool
-    ColumnOrder: int
-    ColumnWidth: int
-    SortOrder: int
-    SortByAscending: bool
-    IsDisplayable: bool
-    IsEditable: bool
-    IsListable: bool
-    IsPartOfKey: bool
-    IsPrimaryFilter: bool
-    ShowIfEmpty: bool
+    default_value: str
+    description: Description
+    validation: Validation
+    search: SearchFieldType
+    display_in_column: bool
+    column_order: int
+    column_width: int
+    sort_order: int
+    sort_by_ascending: bool
+    is_displayable: bool
+    is_editable: bool
+    is_listable: bool
+    is_part_of_key: bool
+    is_primary_filter: bool
+    show_if_empty: bool
 
 
-@dataclass(frozen=True)
-class FieldAsset:
+class SystemFieldType(PascalCaseObject):
+    system: SystemFieldTypeAttributes
+
+
+class FieldAsset(PascalCaseObject):
     """
     Represents a field in the Data360 system.
     """
 
-    Name: str
-    FriendlyName: str
-    Category: str
-    ActionTypeUid: str
-    AssetTypeUid: str
-    RelationshipTypeUid: str
-    Id: int
-    Type: (
+    name: str
+    friendly_name: str
+    category: str
+    action_type_uid: str | None = None
+    asset_type_uid: str
+    relationship_type_uid: str | None = None
+    id: int | None = None
+    type: (
         SearchFieldType
         | BooleanFieldType
         | ComputedOwnershipLookupFieldType
@@ -732,4 +809,5 @@ class FieldAsset:
         | TagFieldType
         | ScoreFieldType
         | SystemFieldType
+        | None
     )

@@ -3,12 +3,11 @@ from functools import cached_property
 
 import requests
 
-from data360.meta_model import MetaModel
 from data360.model import Asset, AssetClass, AssetClassName, AssetType, FieldAsset
 
 logger = logging
 logging.getLogger(__name__)
-logging.basicConfig(encoding="utf-8", level=logging.DEBUG)
+logging.basicConfig(filename="log.txt", encoding="utf-8", level=logging.DEBUG)
 
 
 class Data360Instance:
@@ -22,34 +21,43 @@ class Data360Instance:
         self.url = url + "/api/v2"
 
     @cached_property
-    def metamodel(self) -> MetaModel:
-        """
-        Get the meta model of the Data360 instance.
-        :return: A MetaModel object.
-        """
-        return self.loadMetamodel()
+    def asset_types(self) -> list[AssetType]:
+        """Return the list of the asset types
 
-    def loadMetamodel(self) -> MetaModel:
+        Returns:
+            list[AssetType]: List of asset types
         """
-        Load the meta model from the Data360 instance.
-        :return: A MetaModel object.
+        return self.get_asset_types()
+
+    @cached_property
+    def assets(self) -> list[Asset]:
+        """Returns the list of Assets
+
+        Returns:
+            list[Asset]: List of assets
         """
-        logger.info("Loading metamodel...")
-        asset_types = self.get_asset_types()
-        # remove Group asset type from asset_types as it's not really an asset (it uses another api method)
-        asset_types2 = [
+        # need to filter USERS and GROUPS asset types as their kind of assets actually need another api method to work
+        filtered_asset_types = [
             asset_type
-            for asset_type in asset_types
+            for asset_type in self.asset_types
             if asset_type.asset_class.name
             not in [AssetClassName.GROUP.value, AssetClassName.USER.value]
         ]
         assets = [
             asset
-            for asset_type in asset_types2
+            for asset_type in filtered_asset_types
             for asset in self.get_asset_by_types(asset_type)
         ]
-        logger.info("Metamodel loading complete")
-        return MetaModel(asset_types=asset_types, assets=assets)
+        return assets
+
+    @cached_property
+    def fields(self) -> list[FieldAsset]:
+        fields_assets = [
+            field
+            for asset_type in self.asset_types
+            for field in self.get_fields_by_asset_type(asset_type)
+        ]
+        return fields_assets
 
     def http_request(
         self, method_url: str, headers: dict | None = None, params: dict | None = None
@@ -128,7 +136,7 @@ class Data360Instance:
         # Placeholder for actual API call
         method_url = "/assets/" + asset_type_uid
         response = self.http_request(method_url)
-        assets = [Asset(**item) for item in response.json()["items"]]
+        assets = [Asset.model_validate(item) for item in response.json()["items"]]
         return assets
 
     def get_fields_by_asset_type(self, asset_type: AssetType) -> list[FieldAsset]:
@@ -151,5 +159,10 @@ class Data360Instance:
         response = self.http_request(
             method_url, params={"AssetTypeUid": asset_type_uid}
         )
-        fields = [FieldAsset(**item) for item in response.json()["items"]]
+        if "items" in response.json():
+            fields = [
+                FieldAsset.model_validate(item) for item in response.json()["items"]
+            ]
+        else:
+            return []
         return fields

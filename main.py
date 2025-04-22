@@ -11,5 +11,6 @@ if __name__ == "__main__":
         api_key=config.SOURCE_API_KEY.get_secret_value(),
         api_secret=config.SOURCE_API_SECRET.get_secret_value(),
     )
-    data360.loadMetamodel()
-    print(data360.metamodel)
+    # print(data360.asset_types)
+    # print(data360.assets)
+    print(data360.fields)

@@ -17,10 +17,12 @@ if __name__ == "__main__":
         api_secret=config.DESTINATION_API_SECRET.get_secret_value(),
     )
 
+    print("")
     print("source asset_types")
     print(len(source.asset_types))
     print([asset_type.name for asset_type in source.asset_types])
 
+    print("")
     print("destination asset_types")
     print(len(destination.asset_types))
     print([asset_type.name for asset_type in destination.asset_types])
@@ -32,10 +34,14 @@ if __name__ == "__main__":
         set(source.asset_types) - set(destination.asset_types)
     )
 
+    print("")
     print("asset types not in source")
     print(len(asset_types_not_in_source))
     print([type.name for type in asset_types_not_in_source])
 
+    print("")
     print("asset types not in destination")
     print(len(asset_types_not_in_dest))
     print([asset.name for asset in asset_types_not_in_dest])
+
+    # print(source.fields)

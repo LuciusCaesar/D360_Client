@@ -325,7 +325,7 @@ class ComputedRelationshipLookupFieldTypeAttributes(PascalCaseObject):
 
     column_order: int
     description: Description
-    definition: dict
+    definition: DefinitionFieldType
     is_displayable: bool
     show_if_empty: bool
     hide_filter: bool
@@ -401,7 +401,7 @@ class CounterFieldTypeAttributes(PascalCaseObject):
 
 
 class CounterFieldType(PascalCaseObject):
-    Counter: CounterFieldTypeAttributes
+    counter: CounterFieldTypeAttributes
 
 
 class DateFieldTypeAttributes(PascalCaseObject):
@@ -427,7 +427,7 @@ class DateFieldTypeAttributes(PascalCaseObject):
 
 
 class DateFieldType(PascalCaseObject):
-    Date: DateFieldTypeAttributes
+    date: DateFieldTypeAttributes
 
 
 class DateTimeFieldTypeAttributes(PascalCaseObject):

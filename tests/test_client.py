@@ -4,34 +4,7 @@ import requests
 from data360.client import Data360Instance as d360
 from data360.model import Asset, AssetClass, AssetClassName, AssetType, FieldAsset
 from tests.conftest import MockResponse
-
-
-def generate_asset_type() -> AssetType:
-    return AssetType(
-        id="1234567890",
-        uid="1234567890",
-        name="Test Asset Type",
-        asset_class=AssetClass(
-            id="0987654321",
-            value="Test Asset Class",
-            name=AssetClassName.BUSINESS_ASSET,
-            description="Test Asset Class Description",
-            allow_comments_on_asset=True,
-        ),
-        description="Test Asset Type Description",
-        auto_display_description=True,
-        hierarchical=False,
-        hierarchy_maximum_depth=0,
-        display_format="Test Display Format",
-        notes="Test Notes",
-        use_as_transformation=False,
-        can_own_fusion=False,
-        path="Test Path",
-        can_edit_parent=False,
-        is_description_enabled=True,
-        is_description_visible_by_default=True,
-        is_default_read_access_enabled=True,
-    )
+from tests.model_factory import AssetTypeFactory
 
 
 def test_initialization():
@@ -85,7 +58,7 @@ def test_get_asset_types_by_class(testing_d360, mock_get_asset_types_response):
 
 
 def test_get_asset_by_types(testing_d360, mock_get_assets_response):
-    asset_type = generate_asset_type()
+    asset_type = AssetTypeFactory.build()
 
     assets = testing_d360.get_asset_by_types(asset_type)
 
@@ -94,7 +67,7 @@ def test_get_asset_by_types(testing_d360, mock_get_assets_response):
 
 
 def test_get_fields_by_asset_types(testing_d360, mock_get_fields_response):
-    asset_type = generate_asset_type()
+    asset_type = AssetTypeFactory.build()
 
     fields = testing_d360.get_fields_by_asset_type(asset_type)
 
